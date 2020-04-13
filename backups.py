@@ -3,6 +3,7 @@ import datetime
 import fcntl
 import subprocess
 import re
+import getpass
 
 name = "%Y-%m-%d_%H-%M-%S"
 
@@ -39,9 +40,8 @@ def takeLock():
     return False, None
 
 
-def takeBackup():
+def takeBackup(target):
   name = datetime.date.today().strftime("%Y-%m-%d_%H-%M-%S")
-  target = "/Users/psn"
   subprocess.check_call(["tarsnap", "--print-stats","-c", "-f", name, target])
 
 def main():
@@ -56,7 +56,8 @@ def main():
   locked, lockfh = takeLock()
   if not locked:
     return
-  takeBackup()
+  target = "/Users/" + getpass.getuser()
+  takeBackup(target)
 
 
 if __name__ == "__main__":
